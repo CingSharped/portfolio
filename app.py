@@ -1,10 +1,11 @@
 from flask import Flask, url_for, render_template
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+import os
 
 
 app = Flask(__name__)
-app.secret_key = "secret"
+app.secret_key = os.environ.get('APPP_SECRET')
 
 # Webpages
 @app.route('/')
@@ -15,7 +16,7 @@ def index():
 # Retrieve projects from Google Sheets
 def get_projects():
     scope = ["https://spreadsheets.google.com/feeds",'https://www.googleapis.com/auth/spreadsheets',"https://www.googleapis.com/auth/drive.file","https://www.googleapis.com/auth/drive"]
-    creds = ServiceAccountCredentials.from_json_keyfile_name('env\creds.json', scope)
+    creds = ServiceAccountCredentials.from_json_keyfile_name('creds.json',scope)
     client = gspread.authorize(creds)
     sheet = client.open('Portfolio Projects').sheet1
     data = sheet.get_all_records()
